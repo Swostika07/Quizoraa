@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Add Question - Quizora{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="card-title mb-4">Add New Question</h2>
+                
+                <form method="POST" action="{{ url_for('add_question') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.quiz_id.label(class="form-label") }}
+                        {{ form.quiz_id(class="form-select" + (" is-invalid" if form.quiz_id.errors else "")) }}
+                        {% for error in form.quiz_id.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.question_text.label(class="form-label") }}
+                        {{ form.question_text(class="form-control" + (" is-invalid" if form.question_text.errors else ""), rows=3) }}
+                        {% for error in form.question_text.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.option_a.label(class="form-label") }}
+                        {{ form.option_a(class="form-control" + (" is-invalid" if form.option_a.errors else "")) }}
+                        {% for error in form.option_a.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.option_b.label(class="form-label") }}
+                        {{ form.option_b(class="form-control" + (" is-invalid" if form.option_b.errors else "")) }}
+                        {% for error in form.option_b.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.option_c.label(class="form-label") }}
+                        {{ form.option_c(class="form-control" + (" is-invalid" if form.option_c.errors else "")) }}
+                        {% for error in form.option_c.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.option_d.label(class="form-label") }}
+                        {{ form.option_d(class="form-control" + (" is-invalid" if form.option_d.errors else "")) }}
+                        {% for error in form.option_d.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.correct_answer.label(class="form-label") }}
+                            {{ form.correct_answer(class="form-select" + (" is-invalid" if form.correct_answer.errors else "")) }}
+                            {% for error in form.correct_answer.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            {{ form.points.label(class="form-label") }}
+                            {{ form.points(class="form-control" + (" is-invalid" if form.points.errors else "")) }}
+                            {% for error in form.points.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">Cancel</a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

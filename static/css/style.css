@@ -1,0 +1,184 @@
+body {
+    font-family: 'Roboto', sans-serif; /* Or any other professional-looking font */
+    line-height: 1.6;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures footer sticks to the bottom */
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* Flash messages */
+.alert {
+    margin-top: 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.alert-info {
+    background-color: #e0f7fa;
+    color: #007bb0;
+    border-color: #b2ebf2;
+}
+
+.alert-success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-color: #c8e6c9;
+}
+
+.alert-danger {
+    background-color: #ffebee;
+    color: #c62828;
+    border-color: #ffcdd2;
+}
+
+.alert-warning {
+    background-color: #fffde7;
+    color: #fbc02d;
+    border-color: #fff9c4;
+}
+
+/* Optional: Add a subtle shadow to cards for depth */
+.card {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    border-radius: 0.75rem;
+    overflow: hidden; /* Ensures content respects border-radius */
+}
+
+/* Ensure main content takes available space */
+.container.flex-grow-1 {
+    flex-grow: 1;
+}
+
+/* General quiz elements */
+.quiz-card {
+    border: none;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.quiz-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.quiz-title {
+    color: #007bff;
+    font-weight: 600;
+}
+
+.question-text {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+
+.option-label {
+    cursor: pointer;
+    display: block;
+    padding: 0.75rem 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.option-label:hover {
+    background-color: #e9ecef;
+    border-color: #007bff;
+}
+
+.option-label input[type="radio"] {
+    margin-right: 0.75rem;
+}
+
+.submit-quiz-btn {
+    margin-top: 1.5rem;
+}
+
+/* Result Page Specifics */
+.result-card {
+    text-align: center;
+}
+
+.result-icon {
+    font-size: 4rem;
+    color: #28a745;
+    margin-bottom: 1rem;
+}
+
+.score-display {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.score-detail {
+    font-size: 1.1rem;
+    color: #6c757d;
+}
+
+/* Admin Dashboard Specific Styles (already in admin_dashboard.html, but keeping for reference) */
+/*
+.nav-pills .nav-link.active {
+    background-color: #007bff;
+    color: white;
+}
+.nav-pills .nav-link {
+    color: #007bff;
+    border: 1px solid #007bff;
+    margin: 0 5px;
+    border-radius: 0.35rem;
+    transition: all 0.3s ease;
+}
+.nav-pills .nav-item:hover .nav-link {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(45deg, #007bff, #0056b3) !important;
+}
+.bg-gradient-success {
+    background: linear-gradient(45deg, #28a745, #1e7e34) !important;
+}
+.bg-gradient-info {
+    background: linear-gradient(45deg, #17a2b8, #117a8b) !important;
+}
+
+.card.shadow-lg {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.table thead th {
+    border-bottom: 2px solid #007bff;
+    background-color: #e9ecef;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: rgba(0,0,0,0.03);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0,0,0,0.075);
+    transform: scale(1.005);
+    transition: all 0.1s ease-in-out;
+}
+
+.animate__pulse.animate__infinite {
+    animation-duration: 2s;
+}
+*/ 

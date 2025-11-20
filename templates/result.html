@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Result - Quizora{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-lg p-5 animate__animated animate__zoomIn">
+            <div class="card-body text-center">
+                <div class="mb-4 animate__animated animate__bounceIn">
+                    <span class="d-inline-block bg-success rounded-circle mb-3 p-3" style="width:100px;height:100px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-award fa-3x text-white"></i>
+                    </span>
+                    <h2 class="card-title mb-2 fw-bold text-success">Congratulations!</h2>
+                    <h4 class="mb-3 text-secondary">You completed the {{ result.quiz.title }} Quiz!</h4>
+                    <p class="lead">Thank you for participating!</p>
+                    {% if score_percentage == 100 %}
+                        <div class="perfect-score-badge mt-3 animate__animated animate__tada">
+                            <i class="fas fa-medal fa-2x text-warning me-2"></i>
+                            <span class="fw-bold text-success">Perfect Score!</span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="mb-4 animate__animated animate__fadeInUp">
+                    <div class="score-circle mx-auto mb-3 animate__animated animate__pulse animate__infinite">
+                        <span class="score">{{ (result.score / result.total_questions * 100)|round|int }}<span class="fs-4">%</span></span>
+                    </div>
+                    <div class="text-muted fs-5 mb-2">You scored <b>{{ result.score }}</b> out of <b>{{ result.total_questions }}</b> points</div>
+                    <div class="small text-secondary">Completed on {{ result.completed_at.strftime('%B %d, %Y at %H:%M') }}</div>
+                </div>
+
+                {% if score_percentage < 50 %}
+                <div class="alert alert-info animate__animated animate__fadeIn my-4" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>You scored below 50%. You cannot move to the next advanced level yet. Please try again!
+                </div>
+                {% endif %}
+
+                <div class="answer-breakdown mt-5 text-start">
+                    <h4 class="fw-bold mb-3">Answer Breakdown</h4>
+                    {% for question in quiz.questions %}
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-body">
+                            <h6 class="fw-bold">{{ loop.index }}. {{ question.question_text }}</h6>
+                            <ul class="list-unstyled mb-0">
+                                {% set user_ans = user_answers[question.id|string] if question.id|string in user_answers else 'N/A' %}
+                                {% set correct_ans = question.correct_answer %}
+
+                                {% for option_key, option_text in [('A', question.option_a), ('B', question.option_b), ('C', question.option_c), ('D', question.option_d)] %}
+                                    <li class="mb-1 {% if option_key == correct_ans %}text-success fw-bold{% endif %} {% if option_key == user_ans and option_key != correct_ans %}text-danger{% endif %}">
+                                        {{ option_key }}. {{ option_text }}
+                                        {% if option_key == user_ans %}
+                                            {% if option_key == correct_ans %}
+                                                <i class="fas fa-check-circle ms-2 text-success"></i> Your Answer
+                                            {% else %}
+                                                <i class="fas fa-times-circle ms-2 text-danger"></i> Your Answer
+                                            {% endif %}
+                                        {% elif option_key == correct_ans %}
+                                            <i class="fas fa-check-circle ms-2 text-success"></i> Correct Answer
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                                {% if user_ans == 'N/A' %}
+                                    <li class="text-warning">You did not answer this question.</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-center animate__animated animate__fadeInUp">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary btn-lg"><i class="fas fa-tachometer-alt me-2"></i>Back to Dashboard</a>
+
+                    {% if score_percentage < 50 %}
+                        <a href="{{ url_for('quiz', quiz_id=quiz.id) }}" class="btn btn-danger btn-lg">Try Again <i class="fas fa-redo-alt ms-2"></i></a>
+                    {% else %} {# score_percentage >= 50 #}
+                        {% if not quiz.is_advanced %} {# If it's a basic quiz #}
+                            {% set base_quiz_title = quiz.title.replace(" Basics", "") if quiz.title.endswith(" Basics") else quiz.title.replace("Advanced ", "") %}
+                            {% set advanced_quiz = quizzes | selectattr('title', '==', 'Advanced ' + base_quiz_title) | first %}
+                            {% if advanced_quiz %}
+                                <a href="{{ url_for('start_quiz', quiz_id=advanced_quiz.id) }}" class="btn btn-primary btn-lg">Next <i class="fas fa-arrow-right ms-2"></i></a>
+                            {% else %} {# Basic quiz, no specific advanced counterpart found, but user passed #}
+                                {% if current_user.has_advanced_access %}
+                                <a href="{{ url_for('dashboard', show_advanced=True) }}" class="btn btn-info btn-lg">Next Advanced Level <i class="fas fa-arrow-right ms-2"></i></a>
+                                {% endif %}
+                            {% endif %}
+                        {% else %} {# If it's an advanced quiz #}
+                    {% if recommendations %}
+                    <button type="button" class="btn btn-info btn-lg" data-bs-toggle="modal" data-bs-target="#recommendationsModal">
+                        <i class="fas fa-lightbulb me-2"></i>Recommendations
+                    </button>
+                            {% else %} {# Advanced quiz, but no recommendations #}
+                                {% if current_user.has_advanced_access %}
+                                <a href="{{ url_for('dashboard', show_advanced=True) }}" class="btn btn-info btn-lg">Next Advanced Level <i class="fas fa-arrow-right ms-2"></i></a>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recommendations Modal -->
+{% if recommendations %}
+<div class="modal fade" id="recommendationsModal" tabindex="-1" aria-labelledby="recommendationsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="recommendationsModalLabel"><i class="fas fa-lightbulb me-2"></i>Further Study Recommendations</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-start">
+                <ul class="list-unstyled">
+                    {% for rec in recommendations %}
+                    <li class="mb-2"><i class="fas fa-link me-2 text-primary"></i><a href="{{ rec.url }}" target="_blank">{{ rec.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block styles %}
+<style>
+/* Result Page Specific Styles */
+.score-circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #28a745, #1e7e34); /* Green gradient for success */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px auto;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    border: 5px solid #d4edda; /* Light green border */
+}
+.score {
+    color: white;
+    font-size: 3.5rem;
+    font-weight: bold;
+    line-height: 1;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+.card-title.text-success {
+    color: #28a745 !important;
+}
+
+.perfect-score-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 15px;
+    border-radius: 25px;
+    background-color: #fff3cd; /* Light yellow background */
+    border: 1px solid #ffc107; /* Orange border */
+    color: #664d03; /* Dark yellow text */
+    font-size: 1.1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.perfect-score-badge .fa-medal {
+    color: #fd7e14; /* Orange-gold medal color */
+}
+
+.animate__animated.animate__zoomIn {
+    animation-duration: 0.8s;
+}
+.animate__animated.animate__bounceIn {
+    animation-duration: 1.2s;
+}
+.animate__animated.animate__pulse.animate__infinite {
+    animation-duration: 2s;
+}
+.animate__animated.animate__tada {
+    animation-duration: 1.5s;
+}
+</style>
+{% endblock %} 

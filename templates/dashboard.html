@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Quizora{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="mb-4 animate__animated animate__fadeInDown">Welcome, {{ current_user.username }}!</h2>
+    </div>
+</div>
+
+<div class="row animate__animated animate__fadeInUp">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-lg text-center animated-card bg-light">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                <i class="fas fa-chart-line fa-4x text-primary mb-4 animate__animated animate__bounceIn"></i>
+                <h4 class="card-title mb-4 fw-bold">Your Progress</h4>
+                <div class="d-flex justify-content-between align-items-center w-100 mb-3">
+                    <span class="fs-5 fw-bold text-muted">Quizzes Completed:</span>
+                    <span class="badge bg-primary rounded-pill px-3 py-2 fs-5 animated-badge">{{ current_user.quizzes_taken|length }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <span class="fs-5 fw-bold text-muted">Average Score:</span>
+                    <span class="badge bg-success rounded-pill px-3 py-2 fs-5 animated-badge">
+                        {% if current_user.quizzes_taken %}
+                            {{ (current_user.quizzes_taken|sum(attribute='score') / current_user.quizzes_taken|length)|round|int }}%
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <h3 class="mb-4 animate__animated animate__fadeInRight">
+            {% if request.args.get('show_advanced') == 'True' %}
+                Advanced Quizzes
+            {% else %}
+                Available Quizzes
+            {% endif %}
+        </h3>
+        <div class="row row-cols-1 row-cols-lg-2 g-4">
+            {% for quiz in quizzes %}
+            <div class="col mb-4">
+                <div class="card h-100 border-0 shadow-sm animated-quiz-card">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-primary mb-2 fw-bold">{{ quiz.title }}</h5>
+                        <p class="card-text text-muted flex-grow-1">{{ quiz.description|truncate(120) }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                            <small class="text-secondary"><i class="fas fa-question-circle me-1"></i>{{ quiz.questions|length }} questions</small>
+                            <a href="{{ url_for('quiz', quiz_id=quiz.id) }}" class="btn btn-primary btn-sm px-3 py-2">
+                                Start Quiz <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col">
+                <div class="alert alert-info animate__animated animate__fadeIn" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>No quizzes available at the moment. Check back later!
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% if recent_results %}
+<div class="row mt-5 animate__animated animate__fadeInUp">
+    <div class="col">
+        <h3 class="mb-4">Recent Results</h3>
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle animate__animated animate__fadeIn">
+                        <thead>
+                            <tr class="table-primary">
+                                <th>Quiz</th>
+                                <th>Score</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in recent_results %}
+                            <tr class="animate__animated animate__fadeInLeft">
+                                <td>{{ result.quiz.title }}</td>
+                                <td><span class="badge bg-info rounded-pill px-2 py-1">{{ (result.score / result.total_questions * 100)|round|int }}%</span></td>
+                                <td>{{ result.completed_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    <a href="{{ url_for('result', result_id=result.id) }}" class="btn btn-sm btn-outline-secondary" title="View Result">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block styles %}
+<style>
+/* Dashboard Specific Styles */
+.animated-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.animated-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.animated-badge {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.animated-quiz-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.animated-quiz-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.animate__animated.animate__fadeIn {
+    animation-duration: 1s;
+}
+.animate__animated.animate__fadeInDown {
+    animation-duration: 1s;
+}
+.animate__animated.animate__fadeInUp {
+    animation-duration: 1s;
+}
+.animate__animated.animate__fadeInRight {
+    animation-duration: 1s;
+}
+.animate__animated.animate__fadeInLeft {
+    animation-duration: 1s;
+}
+</style>
+{% endblock %} 

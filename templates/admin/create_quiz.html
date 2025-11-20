@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Create New Quiz - Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg animate__animated animate__fadeInDown">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h3 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Create New Quiz</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('create_quiz') }}">
+                        {{ form.csrf_token }}
+
+                        <div class="mb-3">
+                            {{ form.title.label(class="form-label") }}
+                            {{ form.title(class="form-control", placeholder="Enter quiz title") }}
+                            {% if form.title.errors %}
+                                <div class="text-danger">{% for error in form.title.errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.description.label(class="form-label") }}
+                            {{ form.description(class="form-control", rows="5", placeholder="Provide a brief description of the quiz") }}
+                            {% if form.description.errors %}
+                                <div class="text-danger">{% for error in form.description.errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-success btn-lg animate__animated animate__pulse animate__infinite") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .card-header {
+        background: linear-gradient(45deg, #007bff, #0056b3) !important;
+    }
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+    .animate__pulse.animate__infinite {
+        animation-duration: 2s;
+    }
+</style>
+{% endblock %} 

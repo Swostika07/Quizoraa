@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to Quizora{% endblock %}
+
+{% block content %}
+    <div class="col-md-6 order-md-1">
+        <h1 class="display-3 fw-bolder text-primary mb-4 animate__animated animate__fadeInDown">Unlock Your Knowledge Potential</h1>
+        <p class="lead mb-4 text-secondary animate__animated animate__fadeInUp">Dive into a world of quizzes, challenge your intellect, and discover new facts across a multitude of subjects. Quizora is your ultimate platform for learning and fun!</p>
+        {% if not current_user.is_authenticated %}
+        <div class="d-grid gap-3 d-md-flex justify-content-md-start animate__animated animate__bounceIn">
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-sm">Get Started Today! <i class="fas fa-arrow-right ms-2"></i></a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline-secondary btn-lg px-5 py-3 rounded-pill">Login <i class="fas fa-sign-in-alt ms-2"></i></a>
+        </div>
+        {% else %}
+        <div class="d-grid gap-3 d-md-flex justify-content-md-start animate__animated animate__bounceIn">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-sm">Go to Dashboard <i class="fas fa-tachometer-alt ms-2"></i></a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mt-5 g-4">
+    <div class="col-md-4 animate__animated animate__fadeInLeft">
+        <div class="card h-100 border-0 shadow-lg text-center p-4 feature-card">
+            <div class="card-body">
+                <i class="fas fa-brain fa-4x text-success mb-4 animate__animated animate__pulse animate__infinite"></i>
+                <h3 class="card-title fw-bold text-dark mb-3">Diverse Quizzes</h3>
+                <p class="card-text text-muted">Explore hundreds of quizzes on science, history, tech, and more. Always something new to learn!</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 animate__animated animate__fadeInUp">
+        <div class="card h-100 border-0 shadow-lg text-center p-4 feature-card">
+            <div class="card-body">
+                <i class="fas fa-chart-line fa-4x text-info mb-4 animate__animated animate__pulse animate__infinite"></i>
+                <h3 class="card-title fw-bold text-dark mb-3">Track Your Mastery</h3>
+                <p class="card-text text-muted">Monitor your progress, identify strengths, and improve your scores with detailed analytics.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 animate__animated animate__fadeInRight">
+        <div class="card h-100 border-0 shadow-lg text-center p-4 feature-card">
+            <div class="card-body">
+                <i class="fas fa-users-crown fa-4x text-warning mb-4 animate__animated animate__pulse animate__infinite"></i>
+                <h3 class="card-title fw-bold text-dark mb-3">Challenge & Connect</h3>
+                <p class="card-text text-muted">Compete with friends, climb the leaderboards, and share your achievements with the community.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+/* Index Page Specific Styles */
+.min-vh-75 {
+    min-height: 75vh;
+    display: flex;
+    align-items: center;
+}
+
+.display-3 {
+    font-size: 3.5rem;
+}
+
+@media (max-width: 768px) {
+    .display-3 {
+        font-size: 2.5rem;
+    }
+    .min-vh-75 {
+        min-height: auto;
+        padding-top: 3rem; /* Add padding for smaller screens */
+        padding-bottom: 3rem;
+    }
+}
+
+.feature-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.rounded-pill {
+    border-radius: 50rem !important;
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}
+
+.img-fluid.w-75 {
+    max-width: 400px; /* Constrain image size even on larger screens */
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %} 
